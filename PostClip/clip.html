@@ -1,0 +1,12 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><title>收藏到 Notion</title>
+<style>
+*{box-sizing:border-box}body{font:16px/1.5 system-ui,sans-serif;color:#18342c;background:#f4f6f3;margin:32px auto;padding:0 20px;max-width:640px}main{background:white;padding:28px;border-radius:14px}h1{font-size:25px;margin:0 0 20px}label,summary{display:block;margin:12px 0 5px}summary,button{cursor:pointer}input,select{padding:9px;width:100%;font:inherit}button{background:#205a48;color:white;border:0;border-radius:6px;padding:9px 16px;margin:12px 4px 0 0;font:inherit}button:disabled{opacity:.5}img{display:block;max-width:100%;max-height:260px;margin:12px auto}#source{overflow-wrap:anywhere;color:#54685e}details{border-top:1px solid #ccc;margin-top:20px}p{overflow-wrap:anywhere} [hidden]{display:none}
+</style><main><h1>收藏到 Notion</h1><p id="source"></p>
+<label for="title">标题</label><input id="title" maxlength="1800">
+<label for="choice">封面</label><select id="choice"></select><img id="preview" hidden alt="所选封面" referrerpolicy="no-referrer">
+<label for="file">或选本地图片</label><input type="file" id="file" accept="image/jpeg,image/png,image/webp">
+<button id="save" disabled>保存到 Notion</button> <a id="result" hidden target="_blank" rel="noopener">打开卡片</a>
+<p id="status" role="status"></p>
+<details id="settings"><summary>绑定 Notion 数据库</summary><p>首次使用请填写你自己的 Notion 集成令牌和数据源 ID。<a href="安装与使用.html" target="_blank" rel="noopener">查看安装与绑定说明</a></p><label for="token">内部集成令牌</label><input type="password" id="token" autocomplete="off">
+<label for="ds">数据源 ID</label><input id="ds"><button id="bind">验证并绑定</button><button id="forget">解除绑定</button><p id="binding"></p></details>
+</main><script src="clip.js"></script></html>

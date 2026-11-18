@@ -1,0 +1,9 @@
+{
+  "manifest_version":3,"name":"网页收藏到 Notion","version":"1.2.1",
+  "description":"从当前网页选取标题和封面，保存到指定 Notion 数据库。",
+  "action":{"default_title":"收藏到 Notion"},
+  "background":{"service_worker":"worker.js"},
+  "permissions":["activeTab","scripting","storage"],
+  "host_permissions":["https://api.notion.com/*"],
+  "optional_host_permissions":["https://*/*"]
+}

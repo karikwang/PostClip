@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PostClip 安装与使用</title>
+<style>
+  * { box-sizing: border-box }
+  body { max-width: 44rem; padding: 0 1.4rem; margin: 2.6rem auto; color: #18342c; font: 1rem/1.75 system-ui, sans-serif }
+  h1, h2 { line-height: 1.3 }
+  h2 { margin-top: 2rem; font-size: 1.25rem }
+  ol { padding-left: 1.5rem }
+  li { margin: .6rem 0 }
+  a { color: #205a48 }
+  code { overflow-wrap: anywhere }
+</style>
+<main>
+  <h1>PostClip 安装与使用</h1>
+  <p>用桌面版 Chrome 或 Brave 打开 Instagram，点扩展即可预览标题和封面，并保存到你自己的 Notion 数据库。</p>
+  <h2>安装扩展</h2>
+  <ol>
+    <li>解压 ZIP，把含有 <code>manifest.json</code> 的 <strong>PostClip</strong> 文件夹放到长期保留的位置。</li>
+    <li>在 Chrome 地址栏打开 <code>chrome://extensions</code>，或在 Brave 打开 <code>brave://extensions</code>，开启「开发者模式」。</li>
+    <li>点「加载已解压的扩展程序」，选择上面的 PostClip 文件夹。可以从工具栏的扩展菜单固定「网页收藏到 Notion」。</li>
+  </ol>
+  <p><strong>更新旧版</strong>时，把新文件覆盖到原先加载的 PostClip 文件夹，再到扩展管理页点「重新加载 ↻」。沿用原文件夹可以保留数据库绑定。</p>
+  <h2>首次绑定自己的 Notion</h2>
+  <ol>
+    <li>在准备收藏帖子的数据库中，保留标题列，再准备一列「URL」和一列「文件与媒体」。当同一类型有多列时，请将目标列分别命名为「Instagram 链接」和「封面」。</li>
+    <li>在自己的工作区创建内部集成，开启读取内容和插入内容权限，复制集成令牌。创建内部集成需要相应的工作区管理权限。<a href="https://www.notion.so/my-integrations">Notion 集成管理</a></li>
+    <li>打开目标数据库，通过页面右上角「•••」的「连接」添加刚创建的集成。在数据库设置的「管理数据源」中，点目标数据源旁的「•••」，选择「复制数据源 ID」。<a href="https://developers.notion.com/guides/get-started/upgrade-guide-2025-09-03">Notion 数据源说明</a></li>
+    <li>打开一条 Instagram 帖子，点 PostClip，在「绑定 Notion 数据库」里填写自己的令牌和数据源 ID，点「验证并绑定」。绑定信息保存在这个浏览器的扩展存储中，令牌用于向 Notion 发起请求。</li>
+  </ol>
+  <h2>收藏一条帖子</h2>
+  <p>打开帖子或 Reel 的独立链接，点 PostClip，确认标题和封面后点「保存到 Notion」。标题可以编辑。浏览器首次询问图片站点权限时，允许读取该站点即可上传封面。保存成功后，点「打开卡片」查看结果。</p>
+  <p>若想在 Notion 画廊看到缩略图，请在视图设置的「布局 → 卡片预览」中选择刚才绑定的文件属性。遇到 404 时，检查目标数据库是否已授权给该集成，并从「管理数据源」重新复制 ID。</p>
+</main>
+</html>
