@@ -1,5 +1,5 @@
 {
-  "manifest_version":3,"name":"网页收藏到 Notion","version":"1.2.1",
+  "manifest_version":3,"name":"网页收藏到 Notion","version":"1.2.3",
   "description":"从当前网页选取标题和封面，保存到指定 Notion 数据库。",
   "action":{"default_title":"收藏到 Notion"},
   "background":{"service_worker":"worker.js"},

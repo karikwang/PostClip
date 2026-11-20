@@ -15,17 +15,22 @@ async function inspectPage() {
     try {
       const url = new URL(value, current.origin);
       if (!isInstagram(url.hostname) || url.protocol !== 'https:') return null;
-      const parts = url.pathname.match(/^\/(?:[\w.]+\/)?(reels?|p|tv)\/([\w-]+)\/?$/i);
-      if (parts) return {kind:parts[1].toLowerCase(), code:parts[2], url:url.origin + url.pathname};
+      const parts = url.pathname.match(/^\/(?:([\w.]{1,30})\/)?(reels?|p|tv)\/([\w-]+)\/?$/i);
+      if (parts) return {username:parts[1], kind:parts[2].toLowerCase(), code:parts[3], url:url.origin + url.pathname};
     } catch { /* A malformed page link cannot identify the post. */ }
     return null;
   }
 
   function metadata(doc, post) {
-    const identity = postAt(meta(doc, 'og:url') || doc.querySelector('link[rel~="canonical"]')?.getAttribute('href'));
+    const canonical = doc.querySelector('link[rel~="canonical"]')?.getAttribute('href');
+    const identity = postAt(meta(doc, 'og:url') || canonical);
     if (identity?.code !== post.code) return null;
     const image = [meta(doc, 'og:image:secure_url'), meta(doc, 'og:image')].find(secureImage);
-    return {kind:identity.kind, image, title:meta(doc, 'og:title')};
+    const canonicalPost = postAt(canonical);
+    const twitterTitle = doc.querySelector('meta[name="twitter:title"], meta[property="twitter:title"]')?.content;
+    const username = identity.username || (canonicalPost?.code === post.code && canonicalPost.username) ||
+      twitterTitle?.match(/\(@([\w.]{1,30})\)\s*(?:[•·|][^()]*|)$/u)?.[1];
+    return {kind:identity.kind, image, title:meta(doc, 'og:title'), username};
   }
 
   // A bare Reels feed can expose an individual permalink beside the active video.
@@ -53,7 +58,7 @@ async function inspectPage() {
   if (feed && !post) return {error:'请打开当前 Reel 的分享链接，再点 PostClip，以便识别这条视频的封面。'};
 
   let info = post ? metadata(document, post) : null;
-  if (post && !info?.image) {
+  if (post && (!info?.image || !(info.username || post.username))) {
     // Client-side navigation can leave the previous post's metadata in the live document.
     const kind = post.kind === 'reels' ? 'reel' : post.kind;
     try {
@@ -64,12 +69,28 @@ async function inspectPage() {
         const html = await response.text();
         const end = html.search(/<\/head\s*>/i);
         const doc = new DOMParser().parseFromString(end < 0 ? html : html.slice(0, end), 'text/html');
-        info = metadata(doc, post) || info;
+        const fetched = metadata(doc, post);
+        if (fetched) {
+          // A lookup just for the username should keep the original title and cover.
+          const card = info?.image ? info : fetched;
+          info = {...card, title:card.title || info?.title || fetched.title, username:fetched.username || info?.username};
+        }
       }
     } catch { /* A matching card in the current page can still supply the cover. */ }
   }
   if (current.pathname !== location.pathname || (feed && feedPost()?.code !== post.code)) {
     return {error:'当前帖子已切换，请在要收藏的 Reel 上再点一次 PostClip。'};
+  }
+
+  let username = info?.username || post?.username;
+  if (post && !username) {
+    for (const link of document.querySelectorAll('a[href]')) {
+      const linkedPost = postAt(link.href);
+      if (linkedPost?.code === post.code && linkedPost.username) {
+        username = linkedPost.username;
+        break;
+      }
+    }
   }
 
   if (post && (feed || post.kind.startsWith('reel') || info?.kind.startsWith('reel'))) {
@@ -87,7 +108,7 @@ async function inspectPage() {
     return {
       url:feed ? post.url : current.href,
       title:info?.title || document.querySelector('h1')?.innerText || document.title,
-      reel:true, urls:image ? [image] : []
+      reel:true, username, urls:image ? [image] : []
     };
   }
 
@@ -110,7 +131,7 @@ async function inspectPage() {
     crop = {left:Math.max(0,r.left)/innerWidth, top:Math.max(0,r.top)/innerHeight,
       right:Math.min(innerWidth,r.right)/innerWidth, bottom:Math.min(innerHeight,r.bottom)/innerHeight};
   }
-  return {crop,url:current.href,title:info?.title || (samePage && meta(document,'og:title')) ||
+  return {crop,username,url:current.href,title:info?.title || (samePage && meta(document,'og:title')) ||
     root.querySelector('h1')?.innerText || document.title,urls};
 }
 async function visibleCover(tab, crop) {

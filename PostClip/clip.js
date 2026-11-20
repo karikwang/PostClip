@@ -5,12 +5,13 @@ let draft, config, localURL, saving = false;
 function defaultTitle(draft) {
   const title = draft.title || draft.url;
   const url = new URL(draft.url);
-  const isPost = /(^|\.)instagram\.com$/i.test(url.hostname) &&
-    (draft.reel || /^\/(?:[\w.]+\/)?(?:p|reels?|tv)\/[\w-]+\/?$/i.test(url.pathname));
+  const postPath = url.pathname.match(/^\/(?:([\w.]{1,30})\/)?(?:p|reels?|tv)\/[\w-]+\/?$/i);
+  const isPost = /(^|\.)instagram\.com$/i.test(url.hostname) && (draft.reel || postPath);
   if (!isPost) return title;
 
   // Instagram localizes the byline, while the caption can itself contain quotes and colons.
-  const text = title.trim();
+  const username = draft.username || postPath?.[1];
+  const text = (draft.title || '').trim();
   const wrapper = /^([^\r\n]*?)[:：]\s*(["“„”«‹‘「『])/u.exec(text);
   let caption = text;
   if (wrapper && /instagram/i.test(wrapper[1])) {
@@ -19,7 +20,8 @@ function defaultTitle(draft) {
       caption = text.slice(wrapper[0].length, -1).trim();
     }
   }
-  return caption.replace(/\s*[\r\n]\s*/gu, ' ');
+  caption = caption.replace(/\s*[\r\n]\s*/gu, ' ');
+  return [username, caption].filter(Boolean).join(': ') || draft.url;
 }
 
 async function api(c,path,method='GET',body) {

@@ -1,8 +1,8 @@
 # PostClip
 
-在桌面版 Chrome 或 Brave 中，把 Instagram 帖子和 Reels 的标题、链接和封面保存到自己的 Notion 数据库。收藏前可以预览封面、编辑标题。
+在桌面版 Chrome 或 Brave 中，把 Instagram 帖子和 Reels 的标题、链接和封面保存到自己的 Notion 数据库。自动标题使用「账户名: 正文」格式，例如 `chrismansour__: Throwback 12k followers from this one video😂`。读不到账户名时只填写正文。收藏前可以预览封面、编辑标题。
 
-[下载 PostClip v1.2.1 安装包](https://github.com/karikwang/PostClip/releases/download/v1.2.1/PostClip-1.2.1.zip) · [查看最新版本](https://github.com/karikwang/PostClip/releases/latest)
+[下载 PostClip v1.2.3 安装包](https://github.com/karikwang/PostClip/raw/refs/heads/main/PostClip-1.2.3.zip) · [历史发布记录](https://github.com/karikwang/PostClip/releases)
 
 ## 安装
 
